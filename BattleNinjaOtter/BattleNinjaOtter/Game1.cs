@@ -147,7 +147,26 @@ namespace BattleNinjaOtter
 
         private void UpdateCollision()
         {
+            Rectangle rectangle1;
+            Rectangle rectangle2;
 
+            rectangle1 = new Rectangle((int)hero.Position.X, 
+                (int)hero.Position.Y, 
+                hero.Width, 
+                hero.Height);
+
+            for (int i = 0; i < badGuys.Count; i++)
+            {
+                rectangle2 = new Rectangle((int)badGuys[i].Position.X,
+                    (int)badGuys[i].Position.Y,
+                    badGuys[i].Width,
+                    badGuys[i].Height);
+
+                if (rectangle1.Intersects(rectangle2))
+                {
+                    hero.Active = false;
+                }
+            }
         }
 
         /// <summary>
@@ -160,8 +179,12 @@ namespace BattleNinjaOtter
             previousKeyboardState = currentKeyboardState;
             currentKeyboardState = Keyboard.GetState();
 
+            
             UpdatePlayer(gameTime);
             UpdateBadGuys(gameTime);
+            UpdateCollision();
+
+
         }
 
         /// <summary>
