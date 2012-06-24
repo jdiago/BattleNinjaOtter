@@ -26,7 +26,7 @@ namespace BattleNinjaOtter
             Texture = texture;
             Position = position;
             Active = true;
-            moveSpeed = 6f;
+            moveSpeed = 7f;
         }
 
         public void Update(GameTime gameTime)

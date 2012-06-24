@@ -136,13 +136,18 @@ namespace BattleNinjaOtter
 
         private void AddBadGuy()
         {
-            var randPosition = new Vector2(GraphicsDevice.Viewport.Width + badGuyTexture.Width / 2, rand.Next(100, GraphicsDevice.Viewport.Height - 100));
+            var randPosition = new Vector2(GraphicsDevice.Viewport.Width + badGuyTexture.Width / 2, rand.Next(0, GraphicsDevice.Viewport.Height - badGuyTexture.Height));
 
             var newBadGuy = new BadGuy();
 
             newBadGuy.Initialize(badGuyTexture, randPosition);
 
             badGuys.Add(newBadGuy);
+        }
+
+        private void UpdateCollision()
+        {
+
         }
 
         /// <summary>
