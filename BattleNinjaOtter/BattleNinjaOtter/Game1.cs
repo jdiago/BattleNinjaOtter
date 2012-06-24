@@ -19,9 +19,15 @@ namespace BattleNinjaOtter
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        HeroBlock hero;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            graphics.PreferredBackBufferHeight = 480;
+            graphics.PreferredBackBufferWidth = 640;
+
             Content.RootDirectory = "Content";
         }
 
@@ -34,6 +40,7 @@ namespace BattleNinjaOtter
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            hero = new HeroBlock();
 
             base.Initialize();
         }
@@ -47,6 +54,9 @@ namespace BattleNinjaOtter
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            var playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+
+            hero.Initialize(Content.Load<Texture2D>("block"), playerPosition);
             // TODO: use this.Content to load your game content here
         }
 
@@ -66,13 +76,10 @@ namespace BattleNinjaOtter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
             // TODO: Add your update logic here
+            
 
-            base.Update(gameTime);
+            // base.Update(gameTime);
         }
 
         /// <summary>
@@ -84,6 +91,9 @@ namespace BattleNinjaOtter
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            hero.Draw(spriteBatch);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
