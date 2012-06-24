@@ -26,6 +26,7 @@ namespace BattleNinjaOtter
         Texture2D badGuyTexture;
         TimeSpan badGuysSpawnTime;
         TimeSpan previousSpawnTime;
+        int badGuyMoveDir;
 
         Random rand;
 
@@ -51,11 +52,12 @@ namespace BattleNinjaOtter
         protected override void Initialize()
         {
             hero = new HeroBlock();
-            heroMoveSpeed = 8.0f;
+            heroMoveSpeed = 7.0f;
 
             badGuys = new List<BadGuy>();
             previousSpawnTime = TimeSpan.Zero;
-            badGuysSpawnTime = TimeSpan.FromSeconds(1.0f);
+            badGuysSpawnTime = TimeSpan.FromSeconds(0.1f);
+            badGuyMoveDir = 0;
 
             rand = new Random();
 
@@ -76,7 +78,6 @@ namespace BattleNinjaOtter
             hero.Initialize(Content.Load<Texture2D>("block"), playerPosition);
 
             badGuyTexture = Content.Load<Texture2D>("badBlock");
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -136,13 +137,27 @@ namespace BattleNinjaOtter
 
         private void AddBadGuy()
         {
-            var randPosition = new Vector2(GraphicsDevice.Viewport.Width + badGuyTexture.Width / 2, rand.Next(0, GraphicsDevice.Viewport.Height - badGuyTexture.Height));
+            Vector2 randPosition;
 
-            var newBadGuy = new BadGuy();
+            if (badGuyMoveDir == 0)
+            {
+                randPosition = new Vector2(GraphicsDevice.Viewport.Width + badGuyTexture.Width / 2, rand.Next(0, GraphicsDevice.Viewport.Height - badGuyTexture.Height));
+            }
+            else
+            {
+                randPosition = new Vector2(rand.Next(0, GraphicsDevice.Viewport.Width - badGuyTexture.Width), 0);
+            }
+
+            var newBadGuy = new BadGuy(badGuyMoveDir);
 
             newBadGuy.Initialize(badGuyTexture, randPosition);
 
             badGuys.Add(newBadGuy);
+
+            if (badGuyMoveDir == 0)
+                badGuyMoveDir = 1;
+            else
+                badGuyMoveDir = 0;
         }
 
         private void UpdateCollision()

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.GamerServices;
 
 namespace BattleNinjaOtter
 {
@@ -10,6 +11,7 @@ namespace BattleNinjaOtter
         public Vector2 Position;
         public bool Active;
         public float moveSpeed;
+        public int moveDirection;
 
         public int Width
         {
@@ -21,21 +23,38 @@ namespace BattleNinjaOtter
             get { return Texture.Height; }
         }
 
+        public BadGuy(int moveDirection)
+        {
+            this.moveDirection = moveDirection;
+        }
+
         public void Initialize(Texture2D texture, Vector2 position)
         {
             Texture = texture;
             Position = position;
             Active = true;
-            moveSpeed = 7f;
+            moveSpeed = 8.0f;
         }
 
         public void Update(GameTime gameTime)
         {
-            Position.X -= moveSpeed;
-
-            if (Position.X < -Width)
+            if (moveDirection == 0)
             {
-                Active = false;
+                Position.X -= moveSpeed;
+
+                if (Position.X < -Width)
+                {
+                    Active = false;
+                }
+            }
+            else
+            {
+                Position.Y += moveSpeed;
+
+                if (Position.Y > 500)
+                {
+                    Active = false;
+                }
             }
         }
 
