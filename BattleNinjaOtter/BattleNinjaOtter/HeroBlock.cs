@@ -9,9 +9,9 @@ namespace BattleNinjaOtter
 {
     class HeroBlock
     {
-        public Texture2D Texture { get; set; }
-        public Vector2 Position { get; set; }
-        public bool Active { get; set; }
+        public Texture2D Texture;
+        public Vector2 Position;
+        public bool Active;
 
         public int Width
         {

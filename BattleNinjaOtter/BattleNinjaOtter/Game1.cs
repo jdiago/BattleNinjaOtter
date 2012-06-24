@@ -21,6 +21,11 @@ namespace BattleNinjaOtter
 
         HeroBlock hero;
 
+        KeyboardState currentKeyboardState;
+        KeyboardState previousKeyboardState;
+
+        float heroMoveSpeed;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -41,6 +46,8 @@ namespace BattleNinjaOtter
         {
             // TODO: Add your initialization logic here
             hero = new HeroBlock();
+
+            heroMoveSpeed = 8.0f;
 
             base.Initialize();
         }
@@ -69,6 +76,33 @@ namespace BattleNinjaOtter
             // TODO: Unload any non ContentManager content here
         }
 
+        private void UpdatePlayer(GameTime gameTime)
+        {
+            if(currentKeyboardState.IsKeyDown(Keys.Left))
+            {
+                hero.Position.X -= heroMoveSpeed;
+            }
+
+            if(currentKeyboardState.IsKeyDown(Keys.Right))
+            {
+                hero.Position.X += heroMoveSpeed;
+            }
+
+            if(currentKeyboardState.IsKeyDown(Keys.Up))
+            {
+                hero.Position.Y -= heroMoveSpeed;
+            }
+
+            if(currentKeyboardState.IsKeyDown(Keys.Down))
+            {
+                hero.Position.Y += heroMoveSpeed;
+            }
+
+            // Make sure that the player does not go out of bounds
+            hero.Position.X = MathHelper.Clamp(hero.Position.X, 0, GraphicsDevice.Viewport.Width - hero.Width);
+            hero.Position.Y = MathHelper.Clamp(hero.Position.Y, 0, GraphicsDevice.Viewport.Height - hero.Height);
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -76,10 +110,10 @@ namespace BattleNinjaOtter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
-            
+            previousKeyboardState = currentKeyboardState;
+            currentKeyboardState = Keyboard.GetState();
 
-            // base.Update(gameTime);
+            UpdatePlayer(gameTime);
         }
 
         /// <summary>
