@@ -20,11 +20,17 @@ namespace BattleNinjaOtter
         SpriteBatch spriteBatch;
 
         HeroBlock hero;
+        float heroMoveSpeed;
+        
+        List<BadGuy> badGuys;
+        Texture2D badGuyTexture;
+        TimeSpan badGuysSpawnTime;
+        TimeSpan previousSpawnTime;
+
+        Random rand;
 
         KeyboardState currentKeyboardState;
         KeyboardState previousKeyboardState;
-
-        float heroMoveSpeed;
 
         public Game1()
         {
@@ -44,10 +50,14 @@ namespace BattleNinjaOtter
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             hero = new HeroBlock();
-
             heroMoveSpeed = 8.0f;
+
+            badGuys = new List<BadGuy>();
+            previousSpawnTime = TimeSpan.Zero;
+            badGuysSpawnTime = TimeSpan.FromSeconds(1.0f);
+
+            rand = new Random();
 
             base.Initialize();
         }
@@ -64,6 +74,8 @@ namespace BattleNinjaOtter
             var playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
             hero.Initialize(Content.Load<Texture2D>("block"), playerPosition);
+
+            badGuyTexture = Content.Load<Texture2D>("badBlock");
             // TODO: use this.Content to load your game content here
         }
 
@@ -103,6 +115,36 @@ namespace BattleNinjaOtter
             hero.Position.Y = MathHelper.Clamp(hero.Position.Y, 0, GraphicsDevice.Viewport.Height - hero.Height);
         }
 
+        private void UpdateBadGuys(GameTime gameTime)
+        {
+            if (gameTime.TotalGameTime - previousSpawnTime > badGuysSpawnTime)
+            {
+                previousSpawnTime = gameTime.TotalGameTime;
+
+                AddBadGuy();
+            }
+
+            for (int i = badGuys.Count - 1; i >= 0; i--)
+            {
+                badGuys[i].Update(gameTime);
+                if (badGuys[i].Active == false)
+                {
+                    badGuys.RemoveAt(i);
+                }
+            }
+        }
+
+        private void AddBadGuy()
+        {
+            var randPosition = new Vector2(GraphicsDevice.Viewport.Width + badGuyTexture.Width / 2, rand.Next(100, GraphicsDevice.Viewport.Height - 100));
+
+            var newBadGuy = new BadGuy();
+
+            newBadGuy.Initialize(badGuyTexture, randPosition);
+
+            badGuys.Add(newBadGuy);
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -114,6 +156,7 @@ namespace BattleNinjaOtter
             currentKeyboardState = Keyboard.GetState();
 
             UpdatePlayer(gameTime);
+            UpdateBadGuys(gameTime);
         }
 
         /// <summary>
@@ -127,6 +170,12 @@ namespace BattleNinjaOtter
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             hero.Draw(spriteBatch);
+
+            for (int i = 0; i < badGuys.Count; i++)
+            {
+                badGuys[i].Draw(spriteBatch);
+            }
+
             spriteBatch.End();
 
             base.Draw(gameTime);
